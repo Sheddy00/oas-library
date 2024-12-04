@@ -181,7 +181,7 @@ paths:
     delete:
       tag:
         - "book"
-      summary: delete topics
+      summary: delete book
       parameters:
         - in: query
           name: bookId
@@ -326,7 +326,20 @@ paths:
                 properties:
                   error:
                     type: string
-
+    delete:
+      tag:
+        "authors"
+      summary: Delete author 
+      parameters:
+        - in: query
+          name: authorId
+          schema:
+            type: integer
+          description: author ID to delete
+      responses: 
+        200:
+          description: author deleted with sucess 
+          
 components:
   schemas:
     book: 
