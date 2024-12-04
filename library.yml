@@ -48,14 +48,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/book"
         400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          $ref: '#/components/responses/BadRequest'
         403:
           description: Forbidden
           content:
@@ -84,7 +77,7 @@ paths:
                   error:
                     type: string
     post: 
-      tag:
+      tags:
         - "book"
       summary: Insert new book
       requestBody:
@@ -92,27 +85,18 @@ paths:
         content:
           application/json:
             schema: 
-            type: array
-            items:
-              $ref: '#/components/schemas/book'
+              type: array
+              items:
+                $ref: '#/components/schemas/book'
       responses:
         200:
           description: new book inserted
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/book'
+                $ref: '#/components/schemas/book'
         400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          $ref: '#/components/responses/BadRequest'
         500:
           description: Internal server error
           content:
@@ -123,7 +107,7 @@ paths:
                   error:
                     type: string
     put:
-      tag:
+      tags:
         - "books"
       summary: Create or update a list of books
       requestBody:
@@ -131,9 +115,9 @@ paths:
         content:
           application/json:
             schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/book'
+              type: array
+              items:
+                $ref: '#/components/schemas/book'
       responses:
         200:
           description: update book successfully
@@ -142,14 +126,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/book'
         400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          $ref: '#/components/responses/BadRequest'
         403:
           description: Forbidden
           content:
@@ -177,12 +154,13 @@ paths:
                 properties:
                   error:
                     type: string
+  /books/{bookId}:
     delete:
-      tag:
+      tags:
         - "book"
       summary: delete book
       parameters:
-        - in: query
+        - in: paht
           name: bookId
           schema:
             type: integer
@@ -193,7 +171,7 @@ paths:
 
   /author:
     get:
-      tag:
+      tags:
         - "authors"
       summary: Get all authors
       description: Show all authors filter by name
@@ -216,14 +194,7 @@ paths:
                 items: 
                   $ref: '#/components/schemas/author'
         400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string 
+          $ref: '#/components/responses/BadRequest'
         500: 
           description: Internal Server Error 
           content:
@@ -234,7 +205,7 @@ paths:
                   error:
                     type: string
     post:
-      tag:
+      tags:
         "authors"
       summary: Insert new author
       requestBody:
@@ -249,18 +220,9 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/book'
+                $ref: '#/components/schemas/book'
         400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          $ref: '#/components/responses/BadRequest'
         500:
           description: Internal server error
           content:
@@ -271,7 +233,7 @@ paths:
                   error:
                     type: string
     put:
-      tag:
+      tags:
         "authors"
       summary: Create or update authors
       requestBody:
@@ -279,9 +241,9 @@ paths:
         content:
           application/json:
             schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/author'
+              type: array
+              items:
+                $ref: '#/components/schemas/author'
       responses:
         200:
           description: author updated successfully
@@ -290,14 +252,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/author'
         400:
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+          $ref: '#/components/responses/BadRequest'
         403:
           description: Forbidden
           content:
@@ -326,7 +281,7 @@ paths:
                   error:
                     type: string
     delete:
-      tag:
+      tags:
         "authors"
       summary: Delete author 
       parameters:
@@ -385,7 +340,7 @@ components:
         - name 
         - sex
   parameters:
-    Page:
+    page:
       name: page
       description: Number for pagination
       in: query
@@ -393,7 +348,7 @@ components:
         type: integer
         default: 1
       required: false
-    PageSize:
+    pageSize:
       name: pageSize 
       description: Size of pagination
       in: query 
@@ -409,7 +364,17 @@ components:
         type: object
         properties:
           page:
-            $ref: '#/components/parameters/Page'
-          PageSize:
-            $ref: '#/components/parameters/PageSize'
+            $ref: '#/components/parameters/page'
+          pageSize:
+            $ref: '#/components/parameters/pageSize'
       required: false
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+                error:
+                  type: string
