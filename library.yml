@@ -191,6 +191,49 @@ paths:
       responses: 
         200:
           description: book deleted with sucess 
+
+  /author:
+    get:
+      tag:
+        - "authors"
+      summary: Get all authors
+      description: Show all authors filter by name
+      operationId: getAuthors
+      parameters:
+        - in: query 
+          name: authorName
+          description: Filter return author by given name
+          required: false
+          schema:
+            type: string 
+        - $ref: '#/components/parameters/queryPagination'
+      responses:
+        200:
+          description: Author filtered
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/author'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string 
+        500: 
+          description: Internal Server Error 
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  error:
+                    type: string
 components:
   schemas:
     book: 
