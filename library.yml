@@ -271,7 +271,62 @@ paths:
                 properties:
                   error:
                     type: string
-    
+    put:
+      tag:
+        "authors"
+      summary: Create or update authors
+      requestBody:
+        required: true 
+        content:
+          application/json:
+            schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/author'
+      responses:
+        200:
+          description: author updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/author'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
 components:
   schemas:
     book: 
