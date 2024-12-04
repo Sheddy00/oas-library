@@ -178,6 +178,19 @@ paths:
                 properties:
                   error:
                     type: string
+    delete:
+      tag:
+        - "book"
+      summary: delete topics
+      parameters:
+        - in: query
+          name: bookId
+          schema:
+            type: integer
+          description: book ID to delete
+      responses: 
+        200:
+          description: book deleted with sucess 
 components:
   schemas:
     book: 
