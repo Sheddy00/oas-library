@@ -1,0 +1,149 @@
+openapi: '3.1.0'
+info:
+  title: OAS Library
+  version: '1.0'
+  description: STD22012
+servers:
+  - url: https://oas-library.com
+tags: 
+  - name: books
+  - name: authors
+  - name: topics
+paths:
+  /books:
+    get:
+      tags:
+        - "books"
+      summary: Get all books
+      description: The returned books are ordered by updated datetime.
+      operationId: getBooks
+      parameters:
+        - in: query
+          name: bookName
+          description: Filter return books by given name
+          required: false
+          schema: 
+            type: string 
+        - in: query
+          name: realeseDateStart
+          description: Filter books with a realese date greater than or equal to this date
+          required: false
+          schema: 
+            type: string 
+            format: date
+        - in: query 
+          name: realeseDateEnd
+          description: Filter books with a realese date less than or equal to this date
+          required: false
+          schema: 
+            type: string 
+            format: date
+        - $ref: '#/components/parameters/queryPagination'
+      responses:
+        200: 
+          description: The list of filtered books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/book"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+components:
+  schemas:
+    book: 
+      type: object
+      properties:
+        id:
+          type: string 
+        bookName: 
+          type: string 
+        author:
+          $ref: '#/components/schemas/author'
+        pageNumbers:
+          type: integer
+        topic:
+          type: string
+          enum:
+            - ROMANCE
+            - COMEDY
+            - OTHER
+        realeseDate:
+          type: string 
+          format: date   
+    author:
+      type : object
+      properties: 
+        id:
+          type: string
+        name : 
+          type: string
+        sex: 
+          type: string 
+          enum:
+            - M
+            - F
+  parameters:
+    Page:
+      name: page
+      description: Number for pagination
+      in: query
+      schema: 
+        type: integer
+        default: 1
+      required: false
+    PageSize:
+      name: pageSize 
+      description: Size of pagination
+      in: query 
+      schema: 
+        type: integer
+        default: 30
+      required: false
+    queryPagination:
+      name: queryPagination 
+      description: reusable pagination
+      in: query 
+      schema: 
+        type: object
+        properties:
+          page:
+            $ref: '#/components/parameters/Page'
+          PageSize:
+            $ref: '#/components/parameters/PageSize'
+      required: false
