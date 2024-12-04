@@ -84,6 +84,61 @@ paths:
                 properties:
                   error:
                     type: string
+    put:
+      tag:
+        - "books"
+      summary: Create or update a list of books
+      requestBody:
+        required: true 
+        content:
+          application/json:
+            schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/book'
+      responses:
+        200:
+          description: update book successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/book'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 components:
   schemas:
     book: 
@@ -105,7 +160,14 @@ components:
             - OTHER
         realeseDate:
           type: string 
-          format: date   
+          format: date  
+      required:
+        - id 
+        - bookName
+        - author
+        - pageNumbers 
+        - topic 
+        - realeseDate
     author:
       type : object
       properties: 
@@ -118,6 +180,10 @@ components:
           enum:
             - M
             - F
+      required:
+        - id 
+        - name 
+        - sex
   parameters:
     Page:
       name: page
