@@ -1,4 +1,4 @@
-openapi: '3.1.0'
+openapi: '3.0.3'
 info:
   title: OAS Library
   version: '1.0'
@@ -169,7 +169,7 @@ paths:
         200:
           description: book deleted with sucess 
 
-  /author:
+  /authors:
     get:
       tags:
         - "authors"
@@ -280,12 +280,13 @@ paths:
                 properties:
                   error:
                     type: string
+  /authors/{authorId}:
     delete:
       tags:
         "authors"
       summary: Delete author 
       parameters:
-        - in: query
+        - in: path
           name: authorId
           schema:
             type: integer
