@@ -1,0 +1,341 @@
+openapi: 3.1.0
+info:
+  title: OAS Library
+  version: 1.0
+  description: STD22012
+servers:
+  - url: https://oas-library-student.com
+tags:
+  - name: groupes
+  - name: students
+paths:
+  /groups:
+    get:
+      tags:
+        - groups
+      summary: Get all groups
+      description: The returned groups are ordered by updated datetime.
+      operationId: getGroups
+      parameters:
+        - in: query
+          name: groupName
+          description: Filter return groupes by given name
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: releaseDateStart
+          description: Filter groups with a release date greater than or equal to this date
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: releaseDateEnd
+          description: Filter groups with a release date less than or equal to this date
+          required: false
+          schema:
+            type: string
+            format: date
+          $ref: '#/components/parameters/queryPagination'
+      responses:
+        '200':
+          description: The list of filtered groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/group"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    post:
+      tags:
+        - "groups"
+      summary: Insert new group
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/group'
+      responses:
+        '200':
+          description: New group inserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/group"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+    put:
+      tags:
+        - "groups"
+      summary: Create or update a list of groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/group'
+      responses:
+        '200':
+          description: Update group successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/group"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /books/{bookId}:
+    delete:
+      tags:
+        - "groups"
+      summary: Delete group
+      parameters:
+        - in: path
+          name: groupId
+          schema:
+            type: integer
+          description: Group ID to delete
+      responses:
+        '200':
+          description: Group deleted with success
+
+/students:
+  get:
+    tags:
+      - students
+    summary: Get all students
+    description: Show all students filter by name
+    operationId: getStudents
+    parameters:
+      - in: query
+        name: studentName
+        description: Filter return student by given name
+        required: false
+        schema:
+          type: string
+        $ref: '#/components/parameters/queryPagination'
+    responses:
+      '200':
+        description: Student filtered
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/student"
+      400:
+        $ref: '#/components/responses/BadRequest'
+      500:
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+    post:
+      tags:
+        - "students"
+      summary: Insert new student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/student'
+      responses:
+        '200':
+          description: Student inserted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/student"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+  /students/{studentId}:
+    delete:
+      tags:
+        "students"
+      summary: Delete student
+      parameters:
+        - in: path
+          name: studentId
+          schema:
+            type: integer
+          description: student ID to delete
+      responses: 
+        200:
+          description: student deleted with sucess 
+          
+components:
+  schemas:
+    group: 
+      type: object
+      properties:
+        id:
+          type: string 
+        groupName: 
+          type: string 
+        promotion:
+          type: string
+          enum:
+            - G
+            - H
+            - J
+            - K
+        promotionNumbers:
+          type: integer
+        realeseDateYear:
+          type: string 
+          format: date  
+        students:
+          $ref: '#/components/schemas/student'
+      required:
+        - id 
+        - groupName
+        - student
+        - promotion
+        - promotionNumbers 
+        - realeseDateYear
+    student:
+      type : object
+      properties: 
+        id:
+          type: string
+        name: 
+          type: string
+        sex: 
+          type: string 
+          enum:
+            - M
+            - F
+        birthday:
+          type: string
+          format: date
+        reference:
+          type: string
+        groupe:
+          type: string
+      required:
+        - id 
+        - name 
+        - sex
+  parameters:
+    page:
+      name: page
+      description: Number for pagination
+      in: query
+      schema: 
+        type: integer
+        default: 1
+      required: false
+    pageSize:
+      name: pageSize 
+      description: Size of pagination
+      in: query 
+      schema: 
+        type: integer
+        default: 30
+      required: false
+    queryPagination:
+      name: queryPagination 
+      description: reusable pagination
+      in: query 
+      schema: 
+        type: object
+        properties:
+          page:
+            $ref: '#/components/parameters/page'
+          pageSize:
+            $ref: '#/components/parameters/pageSize'
+      required: false
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+                error:
+                  type: string
