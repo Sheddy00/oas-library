@@ -1,13 +1,16 @@
-openapi: 3.1.0
+openapi: '3.0.3'
 info:
   title: OAS Library
-  version: 1.0
+  version: '1.0'
   description: STD22012
 servers:
   - url: https://oas-library-student.com
 tags:
-  - name: groupes
+  - name: groups
+    description: Group-related operations
   - name: students
+    description: Student-related operations
+
 paths:
   /groups:
     get:
@@ -19,7 +22,7 @@ paths:
       parameters:
         - in: query
           name: groupName
-          description: Filter return groupes by given name
+          description: Filter return groups by given name
           required: false
           schema:
             type: string
@@ -76,9 +79,11 @@ paths:
                 properties:
                   error:
                     type: string
+
+  /groups/:
     post:
       tags:
-        - "groups"
+        - groups
       summary: Insert new group
       requestBody:
         required: true
@@ -106,9 +111,10 @@ paths:
                 properties:
                   error:
                     type: string
+
     put:
       tags:
-        - "groups"
+        - groups
       summary: Create or update a list of groups
       requestBody:
         required: true
@@ -154,59 +160,62 @@ paths:
                 properties:
                   error:
                     type: string
-  /books/{bookId}:
+
+  /groups/{groupId}:
     delete:
       tags:
-        - "groups"
+        - groups
       summary: Delete group
       parameters:
         - in: path
           name: groupId
           schema:
             type: integer
+          required: true
           description: Group ID to delete
       responses:
         '200':
           description: Group deleted with success
 
-/students:
-  get:
-    tags:
-      - students
-    summary: Get all students
-    description: Show all students filter by name
-    operationId: getStudents
-    parameters:
-      - in: query
-        name: studentName
-        description: Filter return student by given name
-        required: false
-        schema:
-          type: string
-        $ref: '#/components/parameters/queryPagination'
-    responses:
-      '200':
-        description: Student filtered
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/student"
-      400:
-        $ref: '#/components/responses/BadRequest'
-      500:
-        description: Internal Server Error
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
+  /students:
+    get:
+      tags:
+        - students
+      summary: Get all students
+      description: Show all students filter by name
+      operationId: getStudents
+      parameters:
+        - in: query
+          name: studentName
+          description: Filter return student by given name
+          required: false
+          schema:
+            type: string
+          $ref: '#/components/parameters/queryPagination'
+      responses:
+        '200':
+          description: Student filtered
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/student"
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
     post:
       tags:
-        - "students"
+        - students
       summary: Insert new student
       requestBody:
         required: true
@@ -220,7 +229,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/student"
+                $ref: "#/components/schemas/std"
         400:
           $ref: '#/components/responses/BadRequest'
         500:
@@ -232,21 +241,24 @@ paths:
                 properties:
                   error:
                     type: string
+
   /students/{studentId}:
     delete:
       tags:
-        "students"
+        - students
       summary: Delete student
+      operationId: deleteStudents
       parameters:
         - in: path
           name: studentId
           schema:
             type: integer
+          required: true
           description: student ID to delete
       responses: 
         200:
-          description: student deleted with sucess 
-          
+          description: student deleted with success 
+
 components:
   schemas:
     group: 
@@ -273,15 +285,16 @@ components:
       required:
         - id 
         - groupName
-        - student
         - promotion
-        - promotionNumbers 
+        - promotionNumbers
         - realeseDateYear
+
     student:
-      type : object
-      properties: 
-        id:
-          type: string
+      allOf:
+        - $ref: "#/components/schemas/std"
+
+    std:
+      properties:
         name: 
           type: string
         sex: 
@@ -297,9 +310,9 @@ components:
         groupe:
           type: string
       required:
-        - id 
         - name 
         - sex
+
   parameters:
     page:
       name: page
@@ -327,8 +340,9 @@ components:
           page:
             $ref: '#/components/parameters/page'
           pageSize:
-            $ref: '#/components/parameters/pageSize'
+            $ref: '##/components/parameters/pageSize'
       required: false
+
   responses:
     BadRequest:
       description: Bad request
@@ -337,5 +351,5 @@ components:
           schema:
             type: object
             properties:
-                error:
-                  type: string
+              error:
+                type: string

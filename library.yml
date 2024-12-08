@@ -78,7 +78,7 @@ paths:
                     type: string
     post: 
       tags:
-        - "book"
+        - "books"
       summary: Insert new book
       requestBody:
         required: true
@@ -157,13 +157,14 @@ paths:
   /books/{bookId}:
     delete:
       tags:
-        - "book"
+        - "books"
       summary: delete book
       parameters:
-        - in: paht
+        - in: path
           name: bookId
           schema:
             type: integer
+          required: true
           description: book ID to delete
       responses: 
         200:
@@ -206,7 +207,7 @@ paths:
                     type: string
     post:
       tags:
-        "authors"
+        - "authors"
       summary: Insert new author
       requestBody:
         required: true
@@ -234,7 +235,7 @@ paths:
                     type: string
     put:
       tags:
-        "authors"
+        - "authors"
       summary: Create or update authors
       requestBody:
         required: true 
@@ -283,13 +284,14 @@ paths:
   /authors/{authorId}:
     delete:
       tags:
-        "authors"
+        - "authors"
       summary: Delete author 
       parameters:
         - in: path
           name: authorId
           schema:
             type: integer
+          required: true
           description: author ID to delete
       responses: 
         200:
