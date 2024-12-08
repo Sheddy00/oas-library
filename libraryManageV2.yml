@@ -1,0 +1,440 @@
+openapi: 3.0.3
+info:
+  title: Library API
+  version: 1.0.0
+  description: STD22012
+servers:
+  - url: https://library-management.com
+tags:
+  - name: Books
+  - name: Author
+  - name: Topic
+paths:
+  /books:
+    get:
+      tags:
+        - "Books"
+      summary: Get all books
+      description: The returned books are ordered by updated datetime.
+      operationId: getBooks
+      parameters:
+        - in: query
+          name: bookName
+          description: Filter return books by given name
+          required: false
+          schema:
+            type: string
+        # add parameter to filter books by intervals of dates of the releaseDate       
+        - in: query
+          name: releaseDateMin
+          description: |
+            If `releaseDateMax` is not inprovided, `releaseDateMin` is inprovided. 
+          required: false
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: releaseDateMax
+          description: |
+            If `releaseDateMin` is not inprovided, `releaseDateMax` is inprovided. 
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: The list of filtered books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    put:
+      tags:
+        - "Books"
+      summary: Create or update a list of books
+      operationId: crupdateBooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CrupdateBook'
+      responses:
+        200:
+          description: The list of created or updated books
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+
+  /books/{bookId}:
+    delete:
+      tags:
+        - "Books"
+      summary: Remove a book by id
+      description: The returned confirmation if book delete.
+      operationId: getBooks
+      parameters:
+        - in: path
+          name: id
+          description: remove book by given id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Confirmation the book is delete.
+          content:
+            application/txt:
+              schema:
+                type: string
+                example: 'The book whit id=1 is removed successfully'
+                
+  /authors:
+  # complete GET (can be filtered by name) - PUT - DELETE
+    get:
+      tags:
+        - "Author"
+      summary: Get all authors
+      description: The returned authors are ordered by name.
+      operationId: getAuthors
+      parameters:
+        - in: query
+          name: name
+          description: Filter return author by given name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The list of filtered authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+    put:
+      tags:
+        - "Author"
+      summary: Create or update a list of authors
+      operationId: crupdateAuthors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Author'
+      responses:
+        200:
+          description: The list of created or updated authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+
+  /authors/{authorId}:
+    delete:
+      tags:
+        - "Author"
+      summary: Remove a author by id
+      operationId: deleteAuthor
+      parameters:
+        - in: path
+          name: id
+          description: Remove author by given id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Author deleted successfully
+  
+  /authorTopics:
+    get:
+      tags:
+        - "Author"
+      summary: Get all authorTopics
+      description: The returned authors and list topics.
+      operationId: getAuthorTopics
+      responses:
+        200:
+          description: The list of authors with list topic
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorTopics'
+
+  /books/{bookId}/authors/{authorId}:
+    put:
+      tags:
+        - Books
+      summary: Modify author for a book by Id
+      operationId: updateBook
+      parameters:
+        - in: path
+          name: bookId
+          description: Id of book
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: authorId
+          description: Id of author
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: The updated book
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Book'
+
+  /books/authors:
+    put:
+      tags:
+        - Books
+      summary: Modify authors for a books by Id
+      operationId: updateBooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  bookId:
+                    type: string
+                  authorId: 
+                    type: string
+                required:
+                  - "bookId"
+                  - "authorId"
+      responses:
+        200:
+          description: Updated books with authors
+  
+  /books/{bookId}/topics/{topicId}:
+    put:
+      tags:
+        - Books
+      summary: Modify topic for a book by Id
+      operationId: updateTopicForBook
+      parameters:
+        - in: path
+          name: bookId
+          description: Id of book
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: topicId
+          description: Id of topic
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Book updated topic
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Book'
+  
+  /books/topics:
+    put:
+      tags:
+        - Books
+      summary: Modify topics for books by Id
+      operationId: updateBooksWithTopics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                $ref: '#/components/schemas/UpdateBookTopic'
+      responses:
+        200:
+          description: The updated book with author
+
+  /topics:
+    get:
+      tags:
+        - "Topic"
+      summary: Get all topics
+      description: The returned topics are ordered by name.
+      operationId: getTopics
+      parameters:
+        - in: query
+          name: name
+          description: Filter return topic by given name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The list of filtered topics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'
+    put:
+      tags:
+        - "Topic"
+      summary: Create or update a list of topic
+      operationId: crupdateTopic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CrupdateTopic'
+      responses:
+        200:
+          description: The list of created or updated topic
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'
+
+  /topics/{topicId}:
+    delete:
+      tags:
+        - "Topic"
+      summary: Remove a topic by id
+      operationId: deleteTopic
+      parameters:
+        - in: path
+          name: id
+          description: Remove topic by given id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Topic deleted successfully
+  
+components:
+  schemas:
+    CrupdateTopic:
+      type: object
+      properties:
+        topicName:
+          type: string
+          example: 'Romance'
+
+    Topic:
+      type: object
+      allOf:
+        - properties:
+            id:
+              type: string
+        - $ref: '#/components/schemas/CrupdateTopic'
+    
+
+    CrupdateBook:
+      type: object
+      properties:
+        id: 
+          type: string
+        bookName:
+          type: string  
+        pageNumbers:
+          type: integer
+        Topic:
+          $ref: '#/components/schemas/Topic'
+        releaseDate:
+          type: string
+          format: date
+
+    Book:
+      type: object
+      allOf:
+        - properties:
+            id:
+              type: string
+            author:
+              allOf:
+                - $ref: '#/components/schemas/Author'
+            Topic:
+              allOf:
+                - $ref: '#/components/schemas/Topic'
+        - $ref: '#/components/schemas/CrupdateBook'
+
+    CrupdateAuthor:
+      type: object
+      properties:
+        authorName:
+          type: string
+          example: John Doe
+        sex:
+          $ref: '#/components/schemas/Sex'
+
+    Sex:
+      type: string
+      enum:
+        - M
+        - F
+    Author:
+      type: object
+      allOf:
+        - properties:
+            id:
+              type: string
+        - allOf:
+            - $ref: '#/components/schemas/CrupdateAuthor'
+    
+    UpdateBookAuthor:
+      type: object
+      properties:
+        bookId:
+          type: string
+        authorId: 
+          type: string
+      required:
+        - "bookId"
+        - "authorId"
+
+    UpdateBookTopic:
+      type: object
+      properties:
+        bookId:
+          type: string
+        topicId: 
+          type: string
+      required:
+        - "bookId"
+        - "authorId"
+    
+    AuthorTopics:
+      type: object
+      allOf:
+        - allOf:
+            - $ref: '#/components/schemas/CrupdateAuthor'
+      properties:
+        topic:
+          type: array
+          items:
+            $ref: '#/components/schemas/Topic'
